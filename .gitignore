@@ -1,0 +1,43 @@
+# .NET build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code settings
+.vscode/
+
+# Build results of Visual Studio
+*.Build.csdef
+
+# NuGet packages
+*.nupkg
+packages/
+*.snupkg
+
+# Dotnet CLI artifacts
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Publish directory
+publish/
+wwwroot/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Logs
+*.log
+
+# Test results
+TestResults/

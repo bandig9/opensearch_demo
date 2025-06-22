@@ -10,6 +10,9 @@ services:
       - bootstrap.memory_lock=true # Disable JVM heap memory swapping
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Set min and max JVM heap sizes to at least 50% of system RAM
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}    # Sets the demo admin user password when using demo configuration, required for OpenSearch 2.12 and later
+      - plugins.security.ssl.http.enabled=true
+      - plugins.security.ssl.http.pemcert_filepath=opensearch.crt
+      - plugins.security.ssl.http.pemkey_filepath=opensearch.key
     ulimits:
       memlock:
         soft: -1 # Set memlock to unlimited (no soft or hard limit)
@@ -19,6 +22,9 @@ services:
         hard: 65536
     volumes:
       - opensearch-data1:/usr/share/opensearch/data # Creates volume called opensearch-data1 and mounts it to the container
+      - ./certs/opensearch.crt:/usr/share/opensearch/config/opensearch.crt
+      - ./certs/opensearch.key:/usr/share/opensearch/config/opensearch.key
+      - ./certs/ca.pem:/usr/share/opensearch/config/ca.pem
     ports:
       - 9200:9200 # REST API
       - 9600:9600 # Performance Analyzer
@@ -36,6 +42,9 @@ services:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+      - plugins.security.ssl.http.enabled=true
+      - plugins.security.ssl.http.pemcert_filepath=opensearch.crt
+      - plugins.security.ssl.http.pemkey_filepath=opensearch.key
     ulimits:
       memlock:
         soft: -1
@@ -45,6 +54,10 @@ services:
         hard: 65536
     volumes:
       - opensearch-data2:/usr/share/opensearch/data
+      - opensearch-data1:/usr/share/opensearch/data # Creates volume called opensearch-data1 and mounts it to the container
+      - ./certs/opensearch.crt:/usr/share/opensearch/config/opensearch.crt
+      - ./certs/opensearch.key:/usr/share/opensearch/config/opensearch.key
+      - ./certs/ca.pem:/usr/share/opensearch/config/ca.pem
     networks:
       - opensearch-net
   opensearch-dashboards:
@@ -56,8 +69,26 @@ services:
       - "5601" # Expose port 5601 for web access to OpenSearch Dashboards
     environment:
       OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
+    volumes:
+      - ./certs/ca.pem:/usr/share/opensearch-dashboards/config/ca.pem
+      - ./certs/opensearch.crt:/usr/share/opensearch/config/opensearch.crt
+      - ./certs/opensearch.key:/usr/share/opensearch/config/opensearch.key
+      
     networks:
       - opensearch-net
+  logstash:
+    image: opensearchproject/logstash-oss-with-opensearch-output-plugin:latest # Use a specific version
+    container_name: logstash
+    volumes:
+      - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf # Mount your config file
+      - ./NetELK/MyElkWebAPI/logs:/usr/share/logstash/logs
+      - ./certs/ca.pem:/usr/share/logstash/config/ca.pem   # Mount your CA certificate
+    networks:
+      - opensearch-net
+    depends_on:
+      - opensearch-node1
+      - opensearch-node2
+    
 
 volumes:
   opensearch-data1:

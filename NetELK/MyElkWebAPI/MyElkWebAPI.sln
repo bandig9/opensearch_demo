@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyElkWebAPI", "MyElkWebAPI.csproj", "{AA0E586A-79AC-2EA3-4720-E5FA17FBD11A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA0E586A-79AC-2EA3-4720-E5FA17FBD11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0E586A-79AC-2EA3-4720-E5FA17FBD11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0E586A-79AC-2EA3-4720-E5FA17FBD11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0E586A-79AC-2EA3-4720-E5FA17FBD11A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {911573B0-7F82-41C0-8DBA-5BFE78D71FE2}
+	EndGlobalSection
+EndGlobal
