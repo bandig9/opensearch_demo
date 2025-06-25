@@ -83,7 +83,7 @@ services:
       - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf # Mount your config file
       - ./NetELK/MyElkWebAPI/logs:/usr/share/logstash/myelkwebapi/logs
       - ./product/logs:/usr/share/logstash/product/logs
-      - ./test/logs:/usr/share/logstash/test/logs
+      - ./other/logs:/usr/share/logstash/test/logs
       - ./certs/ca.pem:/usr/share/logstash/config/ca.pem   # Mount your CA certificate
     networks:
       - opensearch-net
