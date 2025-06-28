@@ -20,6 +20,11 @@ services:
       nofile:
         soft: 65536 # Maximum number of open files for the opensearch user - set to at least 65536
         hard: 65536
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-u", "admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD}", "https://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
     volumes:
       - opensearch-data1:/usr/share/opensearch/data # Creates volume called opensearch-data1 and mounts it to the container
       - ./certs/opensearch.crt:/usr/share/opensearch/config/opensearch.crt
@@ -52,6 +57,11 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-u", "admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD}", "https://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
     volumes:
       - opensearch-data2:/usr/share/opensearch/data
       - opensearch-data1:/usr/share/opensearch/data # Creates volume called opensearch-data1 and mounts it to the container
@@ -76,6 +86,28 @@ services:
       
     networks:
       - opensearch-net
+    depends_on:
+      opensearch-node1:
+        condition: service_healthy
+      opensearch-node2:
+        condition: service_healthy
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.4
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./NetELK/MyElkWebAPI/logs:/logs/myelkwebapi
+      - ./product/logs:/logs/product
+      - ./other/logs:/logs/other
+    networks:
+      - opensearch-net
+    depends_on:
+      logstash:
+        condition: service_started
+    command: >
+      sh -c "chmod go-w /usr/share/filebeat/filebeat.yml && filebeat"
+
   logstash:
     image: opensearchproject/logstash-oss-with-opensearch-output-plugin:latest # Use a specific version
     container_name: logstash
@@ -90,7 +122,7 @@ services:
     depends_on:
       - opensearch-node1
       - opensearch-node2
-    
+        
 
 volumes:
   opensearch-data1:

@@ -1,0 +1,16 @@
+filebeat.inputs:
+  - type: filestream
+    id: myelkwebapi
+    paths:
+      - /logs/myelkwebapi/myelkwebapi-logs-*.log
+  - type: filestream
+    id: product
+    paths:
+      - /logs/product/product-logs-*.csv
+  - type: filestream
+    id: other
+    paths:
+      - /logs/other/test-*.log
+
+output.logstash:
+  hosts: ["logstash:5044"]

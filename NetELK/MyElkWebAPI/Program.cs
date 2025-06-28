@@ -9,6 +9,8 @@ internal class Program
     {
         var logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
+    .MinimumLevel.Information() // Set the global minimum level (e.g., Information, Warning, Error)
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error) 
     .Enrich.WithProperty("Application", Assembly.GetExecutingAssembly().GetName().Name)
     .WriteTo.File("logs/myelkwebapi-logs-.log", rollingInterval: RollingInterval.Day) // Add this line
     // .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://localhost:9200"))
@@ -40,7 +42,7 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
-        Log.Information("Application started and logging to Elasticsearch!");
+       
 
 
         var summaries = new[]
@@ -59,7 +61,7 @@ internal class Program
                 ))
                 .ToArray();
              var json = System.Text.Json.JsonSerializer.Serialize(forecast);
-            Log.Information($"Weather forecast generated: {json}");
+            Log.Information($"{json}");
             return forecast;
         })
         .WithName("GetWeatherForecast");
